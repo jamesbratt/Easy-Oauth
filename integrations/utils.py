@@ -1,4 +1,6 @@
-def generateUrl(endpoint, params):
+""" Generic utility methods for integration classes """
+
+def generate_url(endpoint, params):
     """ Building the oauth authorisation url """
     url = endpoint
     for i, (param_key, param) in enumerate(params):

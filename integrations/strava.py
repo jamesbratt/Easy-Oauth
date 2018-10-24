@@ -1,5 +1,7 @@
-from .registry import addIntegrationToRegistry
-from .utils import generateUrl
+""" Strava """
+
+from .registry import add_integration_to_registry
+from .utils import generate_url
 
 STRAVA_AUTH_URL = 'https://www.strava.com/oauth/authorize'
 
@@ -25,6 +27,6 @@ class Strava:
             ('scope', self.scope),
             ('state', self.state),
         ]
-        return generateUrl(STRAVA_AUTH_URL, params)
+        return generate_url(STRAVA_AUTH_URL, params)
 
-addIntegrationToRegistry(Strava)
+add_integration_to_registry(Strava)

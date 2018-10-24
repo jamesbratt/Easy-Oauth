@@ -1,11 +1,11 @@
 
 from django.conf.urls import url
 from project.views import (
-ProjectListView,
-ProjectCreate,
-ProjectUpdate,
-OauthLoginRedirect,
-GetOauthToken
+    ProjectListView,
+    ProjectCreate,
+    ProjectUpdate,
+    OauthLoginRedirect,
+    GetOauthToken
 )
 
 app_name = 'project'

@@ -2,13 +2,14 @@ from django.urls import reverse
 from django.db import models
 from customuser.models import LeftfootUser
 from integrations.registry import REGISTRY
-    
+
 APP_CHOICES = []
 
 for registeredApp in REGISTRY.keys():
     APP_CHOICES.append((registeredApp, registeredApp))
 
 class Project(models.Model):
+    """ A developers project for a particular integration """
 
     title = models.CharField(max_length=100)
     user = models.ForeignKey(LeftfootUser, on_delete=models.CASCADE)
@@ -26,4 +27,5 @@ class Project(models.Model):
         return str(self.title)
 
     def get_absolute_url(self,):
+        """ To return to update page when resource is craeted or modified """
         return reverse('project:update-project', kwargs={'pk': self.pk})
