@@ -1,19 +1,19 @@
 from django.urls import reverse
 from django.db import models
 from customuser.models import LeftfootUser
+from integrations.registry import REGISTRY
     
-STRAVA = 'SA'
+APP_CHOICES = []
 
-APP_CHOICES = (
-    (STRAVA, 'Strava'),
-)
+for registeredApp in REGISTRY.keys():
+    APP_CHOICES.append((registeredApp, registeredApp))
 
 class Project(models.Model):
 
     title = models.CharField(max_length=100)
     user = models.ForeignKey(LeftfootUser, on_delete=models.CASCADE)
     app = models.CharField(
-        max_length=2,
+        max_length=30,
         choices=APP_CHOICES,
     )
     secret = models.TextField()
