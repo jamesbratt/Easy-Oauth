@@ -1,15 +1,22 @@
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import View
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from project.models import Project
 from integrations.registry import getIntegrationFromRegistry
 
+
 class OauthLoginRedirect(View):
+    """ Redirect to an integrations authorization page """
+
     def get(self, request, **kwargs):
-        integration = getIntegrationFromRegistry('Strava')
-        integration()
-        return HttpResponse("Oauth redirect")
+        """ Get the redirect url """
+        fields = Project.objects.get(pk=self.kwargs['pk'])
+        integration = getIntegrationFromRegistry(fields.app)
+        integration_instance = integration(fields)
+        url = integration_instance.get_auth_url()
+
+        return HttpResponseRedirect(url)
 
 class GetOauthToken(View):
     def get(self, request, **kwargs):
@@ -24,7 +31,7 @@ class ProjectCreate(CreateView):
 
 class ProjectUpdate(UpdateView):
     model = Project
-    fields = ['title', 'secret', 'client_id', 'callbackUrl']
+    fields = ['title', 'secret', 'client_id', 'callbackUrl', 'scope', 'state']
     template_name_suffix = '_update_form'
 
 class ProjectListView(ListView):

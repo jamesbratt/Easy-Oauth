@@ -1,7 +1,7 @@
 <h1>Projects</h1>
 <ul>
 {% for project in object_list %}
-    <li><a href={% url 'project:update-project' pk=project.id %}>{{ project.title }}</a></li>
+    <li><a href={% url 'project:update-project' pk=project.id %}>{{ project.title }}</a> - <a target="_blank" href={% url 'project:oauth-login' pk=project.id %}>Test Auth Url</a></li>
 {% empty %}
     <li>No projects yet.</li>
 {% endfor %}

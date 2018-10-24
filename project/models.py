@@ -19,6 +19,8 @@ class Project(models.Model):
     secret = models.TextField()
     client_id = models.CharField(max_length=100)
     callbackUrl = models.TextField()
+    scope = models.TextField()
+    state = models.CharField(max_length=100)
 
     def __str__(self):
         return str(self.title)
