@@ -1,0 +1,10 @@
+<h1>Projects</h1>
+<ul>
+{% for project in object_list %}
+    <li><a href={% url 'project:update-project' pk=project.id %}>{{ project.title }}</a></li>
+{% empty %}
+    <li>No projects yet.</li>
+{% endfor %}
+</ul>
+
+<a href={% url 'project:create-project' %}>Create New Project</a>
