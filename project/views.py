@@ -3,9 +3,12 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import View
 from django.http import HttpResponse
 from project.models import Project
+from integrations.registry import getIntegrationFromRegistry
 
 class OauthLoginRedirect(View):
     def get(self, request, **kwargs):
+        integration = getIntegrationFromRegistry('Strava')
+        integration()
         return HttpResponse("Oauth redirect")
 
 class GetOauthToken(View):
