@@ -1,14 +1,16 @@
 """ Strava """
 
 import requests
-from .registry import add_integration_to_registry
-from .utils import generate_url
+from integrations.registry import add_integration_to_registry
+from integrations.utils import generate_url
 
 STRAVA_AUTH_URL = 'https://www.strava.com/oauth/authorize'
 STRAVA_TOKEN_URL = 'https://www.strava.com/oauth/token'
 
 class Strava:
     """ Authentication with Strava """
+
+    FORM_FIELDS = ['title', 'secret', 'client_id', 'callbackUrl', 'scope', 'state']
 
     def __init__(self, fields):
         """ Set instance parameters """

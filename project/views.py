@@ -56,8 +56,16 @@ class ProjectUpdate(UpdateView):
     """ Updating an existing project """
 
     model = Project
-    fields = ['title', 'secret', 'client_id', 'callbackUrl', 'scope', 'state']
+    fields = []
     template_name_suffix = '_update_form'
+
+
+    def dispatch(self, request, *args, **kwargs):
+        fields = Project.objects.get(pk=self.kwargs['pk'])
+        integration = get_integration_from_registry(fields.app)
+        integration_instance = integration(fields)
+        self.fields = integration_instance.FORM_FIELDS
+        return super(ProjectUpdate, self).dispatch(request, *args, **kwargs)
 
 class ProjectListView(ListView):
     """ Listing all projects """
