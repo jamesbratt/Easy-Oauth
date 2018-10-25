@@ -1,3 +1,4 @@
+import json
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import View
@@ -19,14 +20,31 @@ class OauthLoginRedirect(View):
         return HttpResponseRedirect(url)
 
 class GetOauthToken(View):
-    """ Get token from an integration """
+    """ Get authorisation response from an integration """
 
     def get(self, request, **kwargs):
         """ Getting the token """
-        if request.is_ajax():
-            return HttpResponse("Token")
-        else:
-            return HttpResponse("No Token")
+        oauth_response = None
+        status_code = 200
+
+        params = request.GET
+        fields = Project.objects.get(pk=self.kwargs['pk'])
+        integration = get_integration_from_registry(fields.app)
+        integration_instance = integration(fields)
+
+        try:
+            oauth_response = integration_instance.get_auth_response(params)
+        except ValueError as err:
+            oauth_response = err.args[0]
+            status_code = 400
+
+        response = HttpResponse(json.dumps(oauth_response))
+        response["Access-Control-Allow-Origin"] = "*"
+        response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
+        response["Access-Control-Max-Age"] = "1000"
+        response["Access-Control-Allow-Headers"] = "*"
+        response.status_code = status_code
+        return response
 
 class ProjectCreate(CreateView):
     """ Creating a new project """

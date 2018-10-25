@@ -1,9 +1,11 @@
 """ Strava """
 
+import requests
 from .registry import add_integration_to_registry
 from .utils import generate_url
 
 STRAVA_AUTH_URL = 'https://www.strava.com/oauth/authorize'
+STRAVA_TOKEN_URL = 'https://www.strava.com/oauth/token'
 
 class Strava:
     """ Authentication with Strava """
@@ -11,6 +13,7 @@ class Strava:
     def __init__(self, fields):
         """ Set instance parameters """
         self.client_id = fields.client_id
+        self.secret = fields.secret
         self.redirect_uri = fields.callbackUrl
         self.response_type = 'code'
         self.approval_prompt = 'force'
@@ -28,5 +31,17 @@ class Strava:
             ('state', self.state),
         ]
         return generate_url(STRAVA_AUTH_URL, params)
+
+    def get_auth_response(self, params):
+        """ Get the authentication token """
+        payload = {
+            'client_id': self.client_id,
+            'client_secret': self.secret,
+            'code':params.get('code', ''),
+        }
+        response = requests.post(STRAVA_TOKEN_URL, verify=False, data=payload)
+        if response.status_code is not 200:
+            raise ValueError(response.json())
+        return response.json()
 
 add_integration_to_registry(Strava)
