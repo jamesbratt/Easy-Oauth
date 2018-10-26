@@ -1,0 +1,10 @@
+<h1>Integrations</h1>
+<ul>
+{% for integration in object_list %}
+    <li><a href={% url 'integrations:update-integration' pk=integration.id %}>{{ integration.title }}</a></li>
+{% empty %}
+    <li>No integrations yet.</li>
+{% endfor %}
+</ul>
+
+<a href={% url 'integrations:create-integration' %}>Create New Integration</a>

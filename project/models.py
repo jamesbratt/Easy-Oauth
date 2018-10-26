@@ -1,22 +1,14 @@
 from django.urls import reverse
 from django.db import models
 from customuser.models import LeftfootUser
-from integrations.registry import REGISTRY
-
-APP_CHOICES = []
-
-for registeredApp in REGISTRY.keys():
-    APP_CHOICES.append((registeredApp, registeredApp))
+from integration_config.models import IntegrationConf
 
 class Project(models.Model):
     """ A developers project for a particular integration """
 
     title = models.CharField(max_length=100)
     user = models.ForeignKey(LeftfootUser, on_delete=models.CASCADE)
-    app = models.CharField(
-        max_length=30,
-        choices=APP_CHOICES,
-    )
+    integration = models.ForeignKey(IntegrationConf, on_delete=models.SET_NULL, null=True)
     secret = models.TextField()
     client_id = models.CharField(max_length=100)
     callbackUrl = models.TextField()

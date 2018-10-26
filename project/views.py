@@ -1,11 +1,23 @@
 import json
+from importlib import import_module
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import View
 from django.http import HttpResponse, HttpResponseRedirect
 from project.models import Project
-from integrations.registry import get_integration_from_registry
+from integration_config.models import IntegrationConf
 
+def get_integration(integration_id):
+    """ Getting the integration config from db """
+    integration = IntegrationConf.objects.get(pk=integration_id)
+    oauth_class_name = integration.oauth_class_name
+    form_class_name = integration.form_class_name
+    integration_module_path = integration.module_path
+
+    oauth_class = getattr(import_module(integration_module_path), oauth_class_name)
+    form_class = getattr(import_module(integration_module_path), form_class_name)
+
+    return {'oauthClass': oauth_class, 'formClass': form_class}
 
 class OauthLoginRedirect(View):
     """ Redirect to an integrations authorization page """
@@ -13,8 +25,8 @@ class OauthLoginRedirect(View):
     def get(self, request, **kwargs):
         """ Get the redirect url """
         fields = Project.objects.get(pk=self.kwargs['pk'])
-        integration = get_integration_from_registry(fields.app)
-        integration_instance = integration(fields)
+        integration = get_integration(fields.integration.pk)
+        integration_instance = integration['oauthClass'](fields)
         url = integration_instance.get_auth_url()
 
         return HttpResponseRedirect(url)
@@ -29,8 +41,8 @@ class GetOauthToken(View):
 
         params = request.GET
         fields = Project.objects.get(pk=self.kwargs['pk'])
-        integration = get_integration_from_registry(fields.app)
-        integration_instance = integration(fields)
+        integration = get_integration(fields.integration.pk)
+        integration_instance = integration['oauthClass'](fields)
 
         try:
             oauth_response = integration_instance.get_auth_response(params)
@@ -50,21 +62,21 @@ class ProjectCreate(CreateView):
     """ Creating a new project """
 
     model = Project
-    fields = ['title', 'user', 'app']
+    fields = ['title', 'user', 'integration']
 
 class ProjectUpdate(UpdateView):
     """ Updating an existing project """
 
     model = Project
-    fields = []
+    form_class = None
     template_name_suffix = '_update_form'
 
 
     def dispatch(self, request, *args, **kwargs):
         fields = Project.objects.get(pk=self.kwargs['pk'])
-        integration = get_integration_from_registry(fields.app)
-        integration_instance = integration(fields)
-        self.fields = integration_instance.FORM_FIELDS
+        integration = get_integration(fields.integration.pk)
+        integration_form_class = integration['formClass']
+        self.form_class = integration_form_class
         return super(ProjectUpdate, self).dispatch(request, *args, **kwargs)
 
 class ProjectListView(ListView):

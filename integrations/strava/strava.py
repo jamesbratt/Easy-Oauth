@@ -3,6 +3,7 @@
 import requests
 from integrations.registry import add_integration_to_registry
 from integrations.utils import generate_url
+from .forms import StravaForm
 
 STRAVA_AUTH_URL = 'https://www.strava.com/oauth/authorize'
 STRAVA_TOKEN_URL = 'https://www.strava.com/oauth/token'
@@ -21,6 +22,9 @@ class Strava:
         self.approval_prompt = 'force'
         self.scope = fields.scope
         self.state = fields.state
+
+    def get_form(self):
+        return StravaForm
 
     def get_auth_url(self):
         """ Get the authentication url for redirection """
