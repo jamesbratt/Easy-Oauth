@@ -1,3 +1,5 @@
+{% extends 'base.html' %}
+{% block content %}
 <h1>Integrations</h1>
 <ul>
 {% for integration in object_list %}
@@ -8,3 +10,4 @@
 </ul>
 
 <a href={% url 'integrations:create-integration' %}>Create New Integration</a>
+{% endblock content %}

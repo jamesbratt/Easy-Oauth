@@ -1,7 +1,6 @@
 """ Strava """
 
 import requests
-from integrations.registry import add_integration_to_registry
 from integrations.utils import generate_url
 from .forms import StravaForm
 
@@ -49,5 +48,3 @@ class Strava:
         if response.status_code is not 200:
             raise ValueError(response.json())
         return response.json()
-
-add_integration_to_registry(Strava)
