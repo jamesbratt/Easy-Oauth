@@ -6,6 +6,7 @@ from django.views.generic import View
 from django.http import HttpResponse, HttpResponseRedirect
 from project.models import Project
 from integration_config.models import IntegrationConf
+from braces.views import LoginRequiredMixin, UserPassesTestMixin
 
 def get_integration(integration_id):
     """ Getting the integration config from db """
@@ -58,19 +59,23 @@ class GetOauthToken(View):
         response.status_code = status_code
         return response
 
-class ProjectCreate(CreateView):
+class ProjectCreate(LoginRequiredMixin, CreateView):
     """ Creating a new project """
 
+    login_url = '/'
     model = Project
     fields = ['title', 'user', 'integration']
 
-class ProjectUpdate(UpdateView):
+class ProjectUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     """ Updating an existing project """
 
+    raise_exception = True
     model = Project
     form_class = None
     template_name_suffix = '_update_form'
 
+    def test_func(self, user):
+        return self.get_object().user.id == user.id
 
     def dispatch(self, request, *args, **kwargs):
         fields = Project.objects.get(pk=self.kwargs['pk'])
@@ -79,11 +84,15 @@ class ProjectUpdate(UpdateView):
         self.form_class = integration_form_class
         return super(ProjectUpdate, self).dispatch(request, *args, **kwargs)
 
-class ProjectListView(ListView):
+class ProjectListView(LoginRequiredMixin, ListView):
     """ Listing all projects """
 
+    login_url = '/'
     model = Project
     paginate_by = 10
+
+    def get_queryset(self):
+        return Project.objects.filter(user = self.request.user.id)
 
     def get_context_data(self, **kwargs):
         """ Returning context """
