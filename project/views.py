@@ -1,5 +1,6 @@
 import json
 from importlib import import_module
+from django.http import Http404
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import View
@@ -78,7 +79,11 @@ class ProjectUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return self.get_object().user.id == user.id
 
     def dispatch(self, request, *args, **kwargs):
-        fields = Project.objects.get(pk=self.kwargs['pk'])
+        try:
+            fields = Project.objects.get(pk=self.kwargs['pk'])
+        except Project.DoesNotExist:
+            raise Http404("Project does not exist")
+
         integration = get_integration(fields.integration.pk)
         integration_form_class = integration['formClass']
         self.form_class = integration_form_class

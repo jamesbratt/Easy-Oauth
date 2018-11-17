@@ -1,3 +1,4 @@
+{% load staticfiles %}
 <!doctype html>
 <html class="no-js" lang="">
 
@@ -7,10 +8,12 @@
   <title>Easy Oauth</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
 </head>
 
 <body>
     <header>
+        <h1>Easy Oauth</h1>
         <nav>
             <ul>
                 <li><a href="/project">Projects</a></li>
@@ -19,8 +22,10 @@
             </ul>
         </nav>
     </header>
+    <section class="container">
     {% block content %}
     {% endblock content %}
+    </section>
 </body>
 
 </html>

@@ -1,13 +1,30 @@
 {% extends 'base.html' %}
 {% block content %}
 <h1>Projects</h1>
-<ul>
-{% for project in object_list %}
-    <li><a href={% url 'project:update-project' pk=project.id %}>{{ project.title }}</a> - <a target="_blank" href={% url 'project:oauth-login' pk=project.id %}>Test Auth Url</a></li>
-{% empty %}
-    <li>No projects yet.</li>
-{% endfor %}
-</ul>
 
-<a href={% url 'project:create-project' %}>Create New Project</a>
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Integration</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for project in object_list %}
+        <tr>
+            <td class="left">{{ project.title }}</td>
+            <td class="left">{{ project.integration.title }}</td>
+            <td class="right">
+                <a class="btn btn-success" href={% url 'project:update-project' pk=project.id %}>Configure</a>
+                <a class="btn btn-success" target="_blank" href={% url 'project:oauth-login' pk=project.id %}>Test URL</a>
+            </td>
+        </tr>
+        {% empty %}
+            <div>No projects yet.</div>
+        {% endfor %}
+    <tbody>
+</table>
+
+<a class="btn btn-success" href={% url 'project:create-project' %}>Create New Project</a>
 {% endblock content %}
