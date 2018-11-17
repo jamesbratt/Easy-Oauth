@@ -10,6 +10,25 @@ a {
     text-decoration: none;
 }
 
+input[type="submit"] {
+    border: none;
+}
+
+form {
+    width: 50%;
+}
+
+form p {
+    width: 100%;
+}
+
+input[type="text"], input[type="number"], select, textarea {
+    width: 100%;
+    display: block;
+    min-height: 30px;
+    margin-top: 0.5em;
+}
+
 header {
     display: flex;
     flex-direction: row;

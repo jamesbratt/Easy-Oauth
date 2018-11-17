@@ -1,13 +1,26 @@
 {% extends 'base.html' %}
 {% block content %}
 <h1>Integrations</h1>
-<ul>
-{% for integration in object_list %}
-    <li><a href={% url 'integrations:update-integration' pk=integration.id %}>{{ integration.title }}</a></li>
-{% empty %}
-    <li>No integrations yet.</li>
-{% endfor %}
-</ul>
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for integration in object_list %}
+        <tr>
+            <td class="left">{{ integration.title }}</td>
+            <td class="right">
+                <a class="btn btn-success" href={% url 'integrations:update-integration' pk=integration.id %}>Configure</a>
+            </td>
+        </tr>
+        {% empty %}
+            <div>No integrations yet.</div>
+        {% endfor %}
+    <tbody>
+</table>
 
-<a href={% url 'integrations:create-integration' %}>Create New Integration</a>
+<a class="btn btn-success" href={% url 'integrations:create-integration' %}>Create New Integration</a>
 {% endblock content %}
