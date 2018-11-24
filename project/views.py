@@ -1,4 +1,4 @@
-import json
+import json, os
 from importlib import import_module
 from django.http import Http404
 from django.views.generic.list import ListView
@@ -29,7 +29,15 @@ class OauthLoginRedirect(View):
         fields = Project.objects.get(pk=self.kwargs['pk'])
         integration = get_integration(fields.integration.pk)
         integration_instance = integration['oauthClass'](fields)
-        url = integration_instance.get_auth_url()
+
+        try:
+            url = integration_instance.get_auth_url()
+        except ValueError as err:
+            login_response = err.args[0]
+            status_code = 400
+            response = HttpResponse(json.dumps(login_response))
+            response.status_code = status_code
+            return response
 
         return HttpResponseRedirect(url)
 
@@ -88,6 +96,17 @@ class ProjectUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         integration_form_class = integration['formClass']
         self.form_class = integration_form_class
         return super(ProjectUpdate, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        """ Returning context """
+        context = super(ProjectUpdate, self).get_context_data(**kwargs)
+        if self.request.is_secure():
+            protocol = 'https://'
+        else:
+            protocol = 'http://'
+        context['host_name'] = protocol + self.request.get_host()
+        context['current_id'] = self.kwargs['pk']
+        return context
 
 class ProjectListView(LoginRequiredMixin, ListView):
     """ Listing all projects """

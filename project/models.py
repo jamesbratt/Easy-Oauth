@@ -12,6 +12,7 @@ class Project(models.Model):
     secret = models.TextField()
     client_id = models.CharField(max_length=100)
     callbackUrl = models.TextField()
+    oauth_consumer_key = models.CharField(max_length=100, default=None, null=True)
     scope = models.TextField()
     state = models.CharField(max_length=100)
 

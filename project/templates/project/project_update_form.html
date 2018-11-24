@@ -1,8 +1,18 @@
 {% extends 'base.html' %}
 {% block content %}
 <a href={% url 'project:list-projects' %}>Back</a>
-<form method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input class="btn btn-success" type="submit" value="Save">
-</form>
+<div class="wrapper">
+    <div class="wrapper-left">
+        <form method="post">{% csrf_token %}
+            {{ form.as_p }}
+            <input class="btn btn-success" type="submit" value="Save">
+        </form>
+    </div>
+    <div class="wrapper-right">
+        <h3>Link to OAuth login page</h3>
+        <pre><code>&lt;a href="{{host_name}}&sol;login&sol;{{current_id}}"&gt;test&lt;&sol;a&gt;</code></pre>
+        <h3>Endpoint to retrieve token from</h3>
+        <pre><code>{{host_name}}&sol;authorise&sol;{{current_id}}</code></pre>
+    </div>
+</div>
 {% endblock content %}
