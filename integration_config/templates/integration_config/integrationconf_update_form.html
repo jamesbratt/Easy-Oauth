@@ -1,8 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
 <a href={% url 'integrations:list-integrations' %}>Back</a>
-<form method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input class="btn btn-success" type="submit" value="Update">
-</form>
+<div class="wrapper">
+    <div class="wrapper-left">
+        <form method="post">{% csrf_token %}
+            {{ form.as_p }}
+            <input class="btn btn-success" type="submit" value="Update">
+        </form>
+    </div>
+</div>
 {% endblock content %}

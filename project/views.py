@@ -73,7 +73,11 @@ class ProjectCreate(LoginRequiredMixin, CreateView):
 
     login_url = '/'
     model = Project
-    fields = ['title', 'user', 'integration']
+    fields = ['title', 'integration']
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(ProjectCreate, self).form_valid(form)
 
 class ProjectUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     """ Updating an existing project """

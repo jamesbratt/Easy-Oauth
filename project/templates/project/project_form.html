@@ -1,8 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
 <a href={% url 'project:list-projects' %}>Back</a>
-<form method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input class="btn btn-success" type="submit" value="Create Project">
-</form>
+<div class="wrapper">
+    <div class="wrapper-left">
+        <form method="post">{% csrf_token %}
+            {{ form.as_p }}
+            <input class="btn btn-success" type="submit" value="Create Project">
+        </form>
+    </div>
+</div>
 {% endblock content %}
